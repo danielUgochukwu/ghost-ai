@@ -32,6 +32,7 @@ export function EditorNavbar({
           size="icon"
           aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
           aria-expanded={isSidebarOpen}
+          aria-controls="project-sidebar"
           onClick={onSidebarToggle}
           className="text-copy-secondary hover:bg-subtle hover:text-copy-primary"
         >
@@ -43,5 +44,5 @@ export function EditorNavbar({
 
       <div aria-hidden="true" className="flex items-center justify-end" />
     </header>
-  )
+  );
 }

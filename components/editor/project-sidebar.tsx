@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Plus, X } from "lucide-react"
+import { Plus, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
-  isOpen: boolean
-  onClose: () => void
-  onNewProject?: () => void
-  className?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onNewProject?: () => void;
+  className?: string;
 }
 
 function EmptyProjectState({ label }: { label: string }) {
@@ -18,7 +18,7 @@ function EmptyProjectState({ label }: { label: string }) {
     <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-surface-border-subtle bg-subtle/60 px-6 text-center text-sm text-copy-muted">
       {label}
     </div>
-  )
+  );
 }
 
 export function ProjectSidebar({
@@ -31,9 +31,12 @@ export function ProjectSidebar({
     <aside
       aria-label="Project sidebar"
       aria-hidden={!isOpen}
+      inert={!isOpen ? true : undefined}
       className={cn(
         "fixed left-4 top-[4.5rem] z-30 flex h-[calc(100dvh-5.5rem)] w-80 max-w-[calc(100vw-2rem)] flex-col rounded-2xl border border-surface-border bg-sidebar p-4 text-copy-primary shadow-2xl backdrop-blur-xl transition-transform duration-200 ease-out",
-        isOpen ? "translate-x-0" : "-translate-x-[calc(100%+2rem)]",
+        isOpen
+          ? "translate-x-0"
+          : "-translate-x-[calc(100%+2rem)] pointer-events-none",
         className
       )}
     >
@@ -73,5 +76,5 @@ export function ProjectSidebar({
         New Project
       </Button>
     </aside>
-  )
+  );
 }
