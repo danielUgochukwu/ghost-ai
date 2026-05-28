@@ -1,4 +1,4 @@
-import type { Appearance } from "@clerk/ui/internal";
+import type { NextClerkProviderProps } from "@clerk/nextjs/types";
 import { dark } from "@clerk/ui/themes";
 
 export const clerkAppearance = {
@@ -46,4 +46,4 @@ export const clerkAppearance = {
     userButtonTrigger:
       "rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
   },
-} satisfies Appearance;
+} satisfies NonNullable<NextClerkProviderProps["appearance"]>;

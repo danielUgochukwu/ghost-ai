@@ -12,7 +12,9 @@ const signUpUrl = getClerkSignUpUrl();
 const isPublicRoute = createRouteMatcher(getPublicAuthRoutePatterns());
 
 export default clerkMiddleware(
-  async (auth, request) => {
+  async (auth, request, event) => {
+    void event;
+
     if (!isPublicRoute(request)) {
       await auth.protect();
     }

@@ -1,6 +1,6 @@
 # Middleware Strategies
 
-> **Filename:** `proxy.ts` (Next.js <=15: `middleware.ts`). The code is identical; only the filename changes.
+> **Filename:** `proxy.ts` (Next.js 16+) / `middleware.ts` (Next.js ≤15). The code is identical; only the filename changes.
 
 ## Public-First (marketing sites, blogs)
 

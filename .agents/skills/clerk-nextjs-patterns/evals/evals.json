@@ -42,8 +42,8 @@
     },
     {
       "id": 4,
-      "prompt": "i need to protect all routes under /dashboard with clerk middleware instead of checking auth in each page component. update the middleware to use createRouteMatcher so only / and /sign-in are public.",
-      "expected_output": "Updates middleware.ts to use createRouteMatcher with public routes, protecting /dashboard and all sub-routes",
+      "prompt": "i need to protect all routes under /dashboard with Clerk using proxy.ts instead of checking auth in each page component. update proxy.ts to use createRouteMatcher with public routes so only / and /sign-in are public and /dashboard sub-routes are protected.",
+      "expected_output": "Updates proxy.ts so it uses createRouteMatcher with public routes to protect /dashboard and all sub-routes",
       "scaffold": "nextjs-basic-auth",
       "assertions": [
         "Imports createRouteMatcher from @clerk/nextjs/server",
