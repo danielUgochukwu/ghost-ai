@@ -4,10 +4,10 @@ import { Dialog, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EditorDialogContent } from "@/components/editor/editor-dialog";
-import type { ProjectDialogController } from "@/hooks/use-project-dialogs";
+import type { ProjectActionsController } from "@/hooks/use-project-actions";
 
 interface ProjectDialogsProps {
-  controller: ProjectDialogController;
+  controller: ProjectActionsController;
 }
 
 export function ProjectDialogs({ controller }: ProjectDialogsProps) {
@@ -128,7 +128,7 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
       {controller.activeDialog === "delete" && controller.selectedProject ? (
         <EditorDialogContent
           title="Delete Project"
-          description={`Delete ${controller.selectedProject.name}? This only removes the mock project from this screen.`}
+          description={`Delete ${controller.selectedProject.name}? This will permanently delete the project and all its data.`}
           footerActions={
             <>
               <DialogClose asChild>

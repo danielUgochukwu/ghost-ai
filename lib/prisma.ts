@@ -19,7 +19,7 @@ const createPrismaClient = () => {
   } else {
     const pool = new pg.Pool({ connectionString: databaseUrl });
     const adapter = new PrismaPg(pool);
-    return new PrismaClient({ adapter });
+    return new PrismaClient({ adapter }).$extends(withAccelerate());
   }
 };
 
