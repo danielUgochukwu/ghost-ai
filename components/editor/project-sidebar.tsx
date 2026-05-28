@@ -1,15 +1,20 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { MockProject } from "@/components/editor/project-types";
 import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  onNewProject?: () => void;
+  ownedProjects: MockProject[];
+  sharedProjects: MockProject[];
+  onNewProject: () => void;
+  onRenameProject: (project: MockProject) => void;
+  onDeleteProject: (project: MockProject) => void;
   className?: string;
 }
 
@@ -21,14 +26,84 @@ function EmptyProjectState({ label }: { label: string }) {
   );
 }
 
+interface ProjectListProps {
+  projects: MockProject[];
+  emptyLabel: string;
+  canManage: boolean;
+  onRenameProject: (project: MockProject) => void;
+  onDeleteProject: (project: MockProject) => void;
+}
+
+function ProjectList({
+  projects,
+  emptyLabel,
+  canManage,
+  onRenameProject,
+  onDeleteProject,
+}: ProjectListProps) {
+  if (projects.length === 0) {
+    return <EmptyProjectState label={emptyLabel} />;
+  }
+
+  return (
+    <ul className="space-y-2">
+      {projects.map((project) => (
+        <li
+          key={project.id}
+          className="flex min-h-16 items-center justify-between gap-3 rounded-xl border border-surface-border bg-surface px-3 py-2"
+        >
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-copy-primary">
+              {project.name}
+            </p>
+            <p className="mt-1 truncate text-xs text-copy-muted">
+              {project.updatedLabel}
+            </p>
+          </div>
+
+          {canManage ? (
+            <div className="flex shrink-0 items-center gap-1">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Rename ${project.name}`}
+                onClick={() => onRenameProject(project)}
+                className="text-copy-muted hover:bg-subtle hover:text-copy-primary"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`Delete ${project.name}`}
+                onClick={() => onDeleteProject(project)}
+                className="text-copy-muted hover:bg-subtle hover:text-error"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function ProjectSidebar({
   isOpen,
   onClose,
+  ownedProjects = [],
+  sharedProjects = [],
   onNewProject,
+  onRenameProject,
+  onDeleteProject,
   className,
 }: ProjectSidebarProps) {
   return (
     <aside
+      id="project-sidebar"
       aria-label="Project sidebar"
       aria-hidden={!isOpen}
       inert={!isOpen ? true : undefined}
@@ -59,11 +134,23 @@ export function ProjectSidebar({
           <TabsTrigger value="my-projects">My Projects</TabsTrigger>
           <TabsTrigger value="shared">Shared</TabsTrigger>
         </TabsList>
-        <TabsContent value="my-projects" className="mt-4">
-          <EmptyProjectState label="No projects yet." />
+        <TabsContent value="my-projects" className="mt-4 min-h-0 overflow-y-auto pr-1">
+          <ProjectList
+            projects={ownedProjects}
+            emptyLabel="No projects yet."
+            canManage
+            onRenameProject={onRenameProject}
+            onDeleteProject={onDeleteProject}
+          />
         </TabsContent>
-        <TabsContent value="shared" className="mt-4">
-          <EmptyProjectState label="No shared projects yet." />
+        <TabsContent value="shared" className="mt-4 min-h-0 overflow-y-auto pr-1">
+          <ProjectList
+            projects={sharedProjects}
+            emptyLabel="No shared projects yet."
+            canManage={false}
+            onRenameProject={onRenameProject}
+            onDeleteProject={onDeleteProject}
+          />
         </TabsContent>
       </Tabs>
 
