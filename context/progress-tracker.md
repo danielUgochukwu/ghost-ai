@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Authentication setup
+- Editor project dialogs
 
 ## Current Goal
 
-- Await the next feature unit after completing `03-auth` auth-page UI polish.
+- Await the next feature unit after completing `04-project-dialog`.
 
 ## Completed
 
@@ -16,6 +16,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - `02-editor`: base editor navbar, floating project sidebar shell, and reusable editor dialog content pattern are implemented.
 - `03-auth`: Clerk is wired into the app with `ClerkProvider`, themed sign-in/sign-up pages, protected-first `proxy.ts`, root redirects, `/editor` route target, and the editor navbar user menu.
 - `03-auth` UI polish: auth pages now use a screenshot-inspired 50/50 desktop split, a token-colored left brand panel, dark right form area, and explicit Geist Sans application.
+- `04-project-dialog`: editor home screen, project dialog state hook, create/rename/delete dialogs, owned project sidebar actions, shared project action hiding, mock project data, and mobile sidebar scrim are implemented.
 
 ## In Progress
 
@@ -38,6 +39,9 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Session Notes
 
+- Started `04-project-dialog` after reading `context/feature-specs/04-project-dialog.md` and the required project context files.
+- Implemented `04-project-dialog` using mock project data only: editor home New Project CTA, sidebar create/rename/delete wiring, live slug preview, rename autofocus and Enter submit, destructive delete confirmation, owned-only sidebar actions, and mobile outside-tap scrim.
+- Verification passed with `npm run lint` and `npx tsc --noEmit`. An existing Next dev server is running at `http://localhost:3000`.
 - Initialized shadcn/ui with the Radix Nova preset, added the required primitive components, and mapped shadcn semantic variables to the Ghost AI dark theme in `app/globals.css`.
 - Verification passed with `npm run lint`, `npx tsc --noEmit`, a direct `cn()` merge check, and a scan for default light tokens. `npm run build` was blocked by the existing `next/font/google` network fetch after escalation was declined.
 - Started `02-editor` after reading the editor feature spec and required project context files.
