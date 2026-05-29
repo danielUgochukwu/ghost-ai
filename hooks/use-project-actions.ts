@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 import { type ProjectData } from "@/components/editor/project-types";
 
@@ -28,12 +28,14 @@ function generateShortId() {
 
 export function useProjectActions() {
   const router = useRouter();
+  const params = useParams<{ projectId?: string }>();
   const [activeDialog, setActiveDialog] = useState<ProjectDialog>(null);
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(
     null
   );
   const [form, setForm] = useState<ProjectFormState>({ name: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const slugPreview = useMemo(() => createSlug(form.name), [form.name]);
   const hasProjectName = form.name.trim().length > 0;
@@ -43,11 +45,13 @@ export function useProjectActions() {
     setSelectedProject(null);
     setForm({ name: "" });
     setIsLoading(false);
+    setError(null);
   }
 
   function openCreateDialog() {
     setSelectedProject(null);
     setForm({ name: "" });
+    setError(null);
     setActiveDialog("create");
   }
 
@@ -58,6 +62,7 @@ export function useProjectActions() {
 
     setSelectedProject(project);
     setForm({ name: project.name });
+    setError(null);
     setActiveDialog("rename");
   }
 
@@ -68,6 +73,7 @@ export function useProjectActions() {
 
     setSelectedProject(project);
     setForm({ name: project.name });
+    setError(null);
     setActiveDialog("delete");
   }
 
@@ -84,6 +90,7 @@ export function useProjectActions() {
     }
 
     setIsLoading(true);
+    setError(null);
     const roomId = `proj-${slugPreview}-${generateShortId()}`;
 
     try {
@@ -96,13 +103,19 @@ export function useProjectActions() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create project");
+        let errorMessage = "Failed to create project";
+        try {
+          const data = await response.json();
+          if (data.error) errorMessage = data.error;
+        } catch {}
+        throw new Error(errorMessage);
       }
 
       router.push(`/editor/${roomId}`);
       closeDialog();
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to create project");
       setIsLoading(false);
     }
   }
@@ -116,6 +129,7 @@ export function useProjectActions() {
     }
 
     setIsLoading(true);
+    setError(null);
 
     try {
       const response = await fetch(`/api/projects/${selectedProject.id}`, {
@@ -127,13 +141,19 @@ export function useProjectActions() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to rename project");
+        let errorMessage = "Failed to rename project";
+        try {
+          const data = await response.json();
+          if (data.error) errorMessage = data.error;
+        } catch {}
+        throw new Error(errorMessage);
       }
 
       router.refresh();
       closeDialog();
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to rename project");
       setIsLoading(false);
     }
   }
@@ -146,6 +166,7 @@ export function useProjectActions() {
     }
 
     setIsLoading(true);
+    setError(null);
 
     try {
       const response = await fetch(`/api/projects/${selectedProject.id}`, {
@@ -153,16 +174,25 @@ export function useProjectActions() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to delete project");
+        let errorMessage = "Failed to delete project";
+        try {
+          const data = await response.json();
+          if (data.error) errorMessage = data.error;
+        } catch {}
+        throw new Error(errorMessage);
       }
 
       // If we were inside the editor and deleted the active project,
-      // we'd redirect to `/editor`. Here we are on the editor home,
-      // so we just refresh.
-      router.refresh();
+      // redirect to `/editor`. Otherwise, just refresh.
+      if (params.projectId === selectedProject.id) {
+        router.push("/editor");
+      } else {
+        router.refresh();
+      }
       closeDialog();
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Failed to delete project");
       setIsLoading(false);
     }
   }
@@ -171,6 +201,7 @@ export function useProjectActions() {
     activeDialog,
     formName: form.name,
     hasProjectName,
+    error,
     isLoading,
     selectedProject,
     slugPreview,

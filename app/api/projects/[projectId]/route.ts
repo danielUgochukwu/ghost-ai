@@ -7,9 +7,8 @@ export async function PATCH(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const { projectId } = await params;
-  const { isAuthenticated, userId } = await auth();
-
-  if (!isAuthenticated || !userId) {
+  const { userId } = await auth();
+  if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -52,27 +51,23 @@ export async function DELETE(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const { projectId } = await params;
-  const { isAuthenticated, userId } = await auth();
 
-  if (!isAuthenticated || !userId) {
+    const { userId } = await auth();
+  if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-  });
-
-  if (!project) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+ try {
+    await prisma.project.delete({
+      where: { 
+        id: projectId,
+        ownerId: userId,
+      },
+    });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    // Prisma throws if no record matches the where clause
+    return NextResponse.json({ error: 'Not found or forbidden' }, { status: 404 });
   }
 
-  if (project.ownerId !== userId) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  await prisma.project.delete({
-    where: { id: projectId },
-  });
-
-  return NextResponse.json({ success: true });
 }

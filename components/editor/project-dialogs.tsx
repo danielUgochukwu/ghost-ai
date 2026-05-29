@@ -48,6 +48,11 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
             className="space-y-4"
             onSubmit={controller.submitCreateProject}
           >
+            {controller.error && (
+              <div className="rounded-md bg-red-500/15 p-3 text-sm text-red-500">
+                {controller.error}
+              </div>
+            )}
             <div className="space-y-2">
               <label
                 htmlFor="create-project-name"
@@ -102,9 +107,14 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
         >
           <form
             id="rename-project-form"
-            className="space-y-2"
+            className="space-y-4"
             onSubmit={controller.submitRenameProject}
           >
+            {controller.error && (
+              <div className="rounded-md bg-red-500/15 p-3 text-sm text-red-500">
+                {controller.error}
+              </div>
+            )}
             <label
               htmlFor="rename-project-name"
               className="text-sm font-medium text-copy-secondary"
@@ -150,7 +160,14 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
           <form
             id="delete-project-form"
             onSubmit={controller.submitDeleteProject}
-          />
+            className="space-y-4"
+          >
+            {controller.error && (
+              <div className="rounded-md bg-red-500/15 p-3 text-sm text-red-500">
+                {controller.error}
+              </div>
+            )}
+          </form>
         </EditorDialogContent>
       ) : null}
     </Dialog>
