@@ -1,9 +1,8 @@
 export type ProjectAccess = "owner" | "collaborator";
 
-export interface MockProject {
+export interface ProjectData {
   id: string;
   name: string;
-  slug: string;
   access: ProjectAccess;
   updatedLabel: string;
 }

@@ -4,17 +4,17 @@ import { Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { MockProject } from "@/components/editor/project-types";
+import type { ProjectData } from "@/components/editor/project-types";
 import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  ownedProjects: MockProject[];
-  sharedProjects: MockProject[];
+  ownedProjects: ProjectData[];
+  sharedProjects: ProjectData[];
   onNewProject: () => void;
-  onRenameProject: (project: MockProject) => void;
-  onDeleteProject: (project: MockProject) => void;
+  onRenameProject: (project: ProjectData) => void;
+  onDeleteProject: (project: ProjectData) => void;
   className?: string;
 }
 
@@ -27,11 +27,11 @@ function EmptyProjectState({ label }: { label: string }) {
 }
 
 interface ProjectListProps {
-  projects: MockProject[];
+  projects: ProjectData[];
   emptyLabel: string;
   canManage: boolean;
-  onRenameProject: (project: MockProject) => void;
-  onDeleteProject: (project: MockProject) => void;
+  onRenameProject: (project: ProjectData) => void;
+  onDeleteProject: (project: ProjectData) => void;
 }
 
 function ProjectList({

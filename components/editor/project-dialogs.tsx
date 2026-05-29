@@ -4,10 +4,10 @@ import { Dialog, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EditorDialogContent } from "@/components/editor/editor-dialog";
-import type { ProjectDialogController } from "@/hooks/use-project-dialogs";
+import type { ProjectActionsController } from "@/hooks/use-project-actions";
 
 interface ProjectDialogsProps {
-  controller: ProjectDialogController;
+  controller: ProjectActionsController;
 }
 
 export function ProjectDialogs({ controller }: ProjectDialogsProps) {
@@ -48,6 +48,11 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
             className="space-y-4"
             onSubmit={controller.submitCreateProject}
           >
+            {controller.error && (
+              <div className="rounded-md bg-red-500/15 p-3 text-sm text-red-500">
+                {controller.error}
+              </div>
+            )}
             <div className="space-y-2">
               <label
                 htmlFor="create-project-name"
@@ -102,9 +107,14 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
         >
           <form
             id="rename-project-form"
-            className="space-y-2"
+            className="space-y-4"
             onSubmit={controller.submitRenameProject}
           >
+            {controller.error && (
+              <div className="rounded-md bg-red-500/15 p-3 text-sm text-red-500">
+                {controller.error}
+              </div>
+            )}
             <label
               htmlFor="rename-project-name"
               className="text-sm font-medium text-copy-secondary"
@@ -128,7 +138,7 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
       {controller.activeDialog === "delete" && controller.selectedProject ? (
         <EditorDialogContent
           title="Delete Project"
-          description={`Delete ${controller.selectedProject.name}? This only removes the mock project from this screen.`}
+          description={`Delete ${controller.selectedProject.name}? This will permanently delete the project and all its data.`}
           footerActions={
             <>
               <DialogClose asChild>
@@ -150,7 +160,14 @@ export function ProjectDialogs({ controller }: ProjectDialogsProps) {
           <form
             id="delete-project-form"
             onSubmit={controller.submitDeleteProject}
-          />
+            className="space-y-4"
+          >
+            {controller.error && (
+              <div className="rounded-md bg-red-500/15 p-3 text-sm text-red-500">
+                {controller.error}
+              </div>
+            )}
+          </form>
         </EditorDialogContent>
       ) : null}
     </Dialog>

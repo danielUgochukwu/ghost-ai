@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Editor project dialogs
+- Backend API routes
 
 ## Current Goal
 
-- Await the next feature unit after completing `04-project-dialog`.
+- Await the next feature unit after completing `06-project-apis`.
 
 ## Completed
 
@@ -17,6 +17,9 @@ Update this file whenever the current phase, active feature, or implementation s
 - `03-auth`: Clerk is wired into the app with `ClerkProvider`, themed sign-in/sign-up pages, protected-first `proxy.ts`, root redirects, `/editor` route target, and the editor navbar user menu.
 - `03-auth` UI polish: auth pages now use a screenshot-inspired 50/50 desktop split, a token-colored left brand panel, dark right form area, and explicit Geist Sans application.
 - `04-project-dialog`: editor home screen, project dialog state hook, create/rename/delete dialogs, owned project sidebar actions, shared project action hiding, mock project data, and mobile sidebar scrim are implemented.
+- `05-prisma`: Prisma schema and database layer are initialized. The `Project` and `ProjectCollaborator` models are created with appropriate indexes and relations. `lib/prisma.ts` acts as a cached singleton branching for Accelerate and PrismaPg. The first migration has been successfully executed and the generated client is type-safe.
+- `06-project-apis`: Backend REST API routes for listing, creating, renaming, and deleting projects implemented using the App Router. Authenticated endpoints with proper ownership checks.
+- `07-wire-editor-home`: Wired the editor home sidebar and dialogs to the real project API. Replaced mock data with server-side Prisma data fetching in `app/editor/page.tsx`, created `useProjectActions` hook to manage dialog state and API mutations (create, rename, delete), and updated the `POST /api/projects` route to accept client-generated room IDs.
 
 ## In Progress
 
@@ -57,3 +60,13 @@ Update this file whenever the current phase, active feature, or implementation s
 - Verified the Clerk basic-auth template path alias finding: updated the template `tsconfig.json` `@/*` mapping to match its root-level `app` directory.
 - Verified the Clerk middleware strategy reference filename mapping: updated the docs to identify `proxy.ts` as the Next.js 16+ convention and `middleware.ts` as the Next.js <=15 filename.
 - Verified the Clerk API-route reference authorization helper finding: updated the docs so `auth()` is awaited and `has()` is called synchronously when setting `isAdmin`.
+- Started `05-prisma` after reviewing `context/feature-specs/05-prisma.md`.
+- Implemented `Project` and `ProjectCollaborator` models in `prisma/models/project.prisma`.
+- Created `lib/prisma.ts` Prisma Client singleton with branch logic for Prisma Postgres Accelerate vs standard `@prisma/adapter-pg`.
+- Configured `prisma.config.ts` to load `.env.local` to securely pass `DATABASE_URL` via environment variables.
+- Verified schema and database sync with `npx prisma migrate dev --name add_project_models`. Generated typed client using Prisma v7 module loading. Build passed.
+- Started `06-project-apis` after reading the feature spec and project context.
+- Implemented `/api/projects` GET and POST, and `/api/projects/[projectId]` PATCH and DELETE endpoints.
+- Enforced project owner authentication checks across all endpoints.
+- Resolved Prisma client TypeScript strictness issues by unifying the client return type when missing the Accelerate extension.
+- Verification passed with `npm run lint`, `npx.cmd tsc --noEmit`, and `npm run build`.
