@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   const session = liveblocks.prepareSession(access.identity.userId, {
     userInfo: { name, avatar, cursorColor },
   });
-  session.allow(room, ["*:write"]);
+  session.allow(room, ["room:write"]);
 
   const { status, body: responseBody } = await session.authorize();
   return new NextResponse(responseBody, { status });
