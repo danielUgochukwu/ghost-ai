@@ -14,10 +14,10 @@ export function CanvasNodeRenderer({ data }: NodeProps<CanvasNode>) {
       className="flex h-full w-full items-center justify-center rounded-xl border border-surface-border px-3 py-2"
     >
       <span className="text-sm font-medium leading-tight">{data.label}</span>
-      <Handle type="source" position={Position.Top} />
-      <Handle type="source" position={Position.Right} />
-      <Handle type="source" position={Position.Bottom} />
-      <Handle type="source" position={Position.Left} />
+      <Handle type="target" position={Position.Top} id="target-top" />
+      <Handle type="source" position={Position.Right} id="source-right" />
+      <Handle type="source" position={Position.Bottom} id="source-bottom" />
+      <Handle type="target" position={Position.Left} id="target-left" />
     </div>
   );
 }
