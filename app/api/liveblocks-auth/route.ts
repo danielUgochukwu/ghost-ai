@@ -17,6 +17,9 @@ export async function POST(request: NextRequest) {
   }
 
   const user = await currentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const name =
     user?.fullName ??
     user?.firstName ??
