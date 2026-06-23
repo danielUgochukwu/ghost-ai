@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Share2, Sparkles, PanelRightClose, PanelRightOpen } from "lucide-react";
+import { Share2, Sparkles, PanelRightClose, PanelRightOpen, LayoutTemplate } from "lucide-react";
 
 import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
 import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { ShareDialog } from "@/components/editor/share-dialog";
 import { CanvasWrapper } from "@/components/editor/canvas-wrapper";
+import { StarterTemplatesModal } from "@/components/editor/starter-templates-modal";
 import { useProjectActions } from "@/hooks/use-project-actions";
 import { type ProjectData } from "@/components/editor/project-types";
 import { Button } from "@/components/ui/button";
+import type { CanvasTemplate } from "@/components/editor/starter-templates";
 
 interface ProjectOwner {
   name: string | null;
@@ -39,6 +41,8 @@ export function WorkspaceShell({
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
+  const [pendingTemplate, setPendingTemplate] = useState<CanvasTemplate | null>(null);
   const projectActions = useProjectActions();
 
   const RightSidebarIcon = isRightSidebarOpen ? PanelRightClose : PanelRightOpen;
@@ -51,9 +55,19 @@ export function WorkspaceShell({
         projectName={project.name}
         actions={
           <>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="flex gap-2"
+              onClick={() => setIsTemplatesModalOpen(true)}
+            >
+              <LayoutTemplate className="h-4 w-4" />
+              <span className="hidden sm:inline">Templates</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className="flex gap-2"
               onClick={() => setIsShareDialogOpen(true)}
             >
@@ -101,7 +115,11 @@ export function WorkspaceShell({
         />
 
         <div className="flex-1 overflow-hidden">
-          <CanvasWrapper roomId={project.id} />
+          <CanvasWrapper
+            roomId={project.id}
+            pendingTemplate={pendingTemplate}
+            onTemplateApplied={() => setPendingTemplate(null)}
+          />
         </div>
 
         {/* Right Sidebar Placeholder */}
@@ -123,6 +141,14 @@ export function WorkspaceShell({
         projectId={project.id}
         isOwner={isOwner}
         projectOwner={projectOwner}
+      />
+      <StarterTemplatesModal
+        isOpen={isTemplatesModalOpen}
+        onClose={() => setIsTemplatesModalOpen(false)}
+        onImport={(template) => {
+          setPendingTemplate(template);
+          setIsTemplatesModalOpen(false);
+        }}
       />
     </div>
   );

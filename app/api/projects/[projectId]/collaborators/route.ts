@@ -31,11 +31,22 @@ export async function GET(
   let hasAccess = project.ownerId === userId;
   
   if (!hasAccess) {
-    const clerk = await clerkClient();
-    const user = await clerk.users.getUser(userId);
-    const primaryEmail = user.primaryEmailAddress?.emailAddress;
-    if (primaryEmail && project.collaborators.some((c) => c.email === primaryEmail)) {
-      hasAccess = true;
+    try {
+      const clerk = await clerkClient();
+      const user = await clerk.users.getUser(userId);
+      const userEmails = new Set(
+        user.emailAddresses.map((email) => email.emailAddress.toLowerCase())
+      );
+
+      hasAccess = project.collaborators.some((c) =>
+        userEmails.has(c.email.toLowerCase())
+      );
+    } catch (error) {
+      console.error("Failed to resolve Clerk user for collaborator access", error);
+      return NextResponse.json(
+        { error: "Unable to verify access" },
+        { status: 503 }
+      );
     }
   }
 
@@ -43,7 +54,7 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  // Enrich with Clerk user data
+  // Enrich with Clerk user data  
   const emails = project.collaborators.map((c) => c.email);
   let clerkUsers: any[] = [];
   
@@ -107,6 +118,9 @@ export async function POST(
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
     }
     email = email.trim().toLowerCase();
+    if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+    }
   } catch {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
@@ -114,9 +128,15 @@ export async function POST(
   // Prevent inviting owner
   const clerk = await clerkClient();
   const ownerUser = await clerk.users.getUser(userId);
-  if (ownerUser.primaryEmailAddress?.emailAddress?.toLowerCase() === email) {
-    return NextResponse.json({ error: "Cannot invite the project owner" }, { status: 400 });
-  }
+ const ownerEmails = new Set(
+    ownerUser.emailAddresses.map((ownerEmail) =>
+      ownerEmail.emailAddress.toLowerCase()
+    )
+  );
+
+  if (ownerEmails.has(email)) {
+     return NextResponse.json({ error: "Cannot invite the project owner" }, { status: 400 });
+   }
 
   try {
     const newCollaborator = await prisma.projectCollaborator.create({

@@ -118,6 +118,16 @@
   --sidebar-ring: var(--accent-primary);
 }
 
+/* React Flow handle visibility — hidden at rest, revealed on node hover or selection */
+.react-flow__handle {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.react-flow__node:hover .react-flow__handle,
+.react-flow__node.selected .react-flow__handle {
+  opacity: 1;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
