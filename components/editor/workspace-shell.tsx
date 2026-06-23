@@ -7,6 +7,7 @@ import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
 import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { ShareDialog } from "@/components/editor/share-dialog";
+import { CanvasWrapper } from "@/components/editor/canvas-wrapper";
 import { useProjectActions } from "@/hooks/use-project-actions";
 import { type ProjectData } from "@/components/editor/project-types";
 import { Button } from "@/components/ui/button";
@@ -99,12 +100,8 @@ export function WorkspaceShell({
           currentRoomId={project.id}
         />
 
-        {/* Central Canvas Placeholder */}
-        <div className="flex flex-1 items-center justify-center bg-surface p-4">
-          <div className="text-center text-muted-foreground">
-            <p>Canvas Area Placeholder</p>
-            <p className="text-sm">Future canvas implementation will go here.</p>
-          </div>
+        <div className="flex-1 overflow-hidden">
+          <CanvasWrapper roomId={project.id} />
         </div>
 
         {/* Right Sidebar Placeholder */}
