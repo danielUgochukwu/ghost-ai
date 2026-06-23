@@ -7,6 +7,7 @@ import {
   ClientSideSuspense,
 } from "@liveblocks/react";
 import { CanvasFlow } from "@/components/editor/canvas-flow";
+import type { CanvasTemplate } from "@/components/editor/starter-templates";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -43,9 +44,11 @@ class LiveblocksErrorBoundary extends Component<
 
 interface CanvasWrapperProps {
   roomId: string;
+  pendingTemplate?: CanvasTemplate | null;
+  onTemplateApplied?: () => void;
 }
 
-export function CanvasWrapper({ roomId }: CanvasWrapperProps) {
+export function CanvasWrapper({ roomId, pendingTemplate, onTemplateApplied }: CanvasWrapperProps) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
       <RoomProvider
@@ -60,7 +63,12 @@ export function CanvasWrapper({ roomId }: CanvasWrapperProps) {
               </div>
             }
           >
-            {() => <CanvasFlow />}
+            {() => (
+              <CanvasFlow
+                pendingTemplate={pendingTemplate}
+                onTemplateApplied={onTemplateApplied}
+              />
+            )}
           </ClientSideSuspense>
         </LiveblocksErrorBoundary>
       </RoomProvider>
