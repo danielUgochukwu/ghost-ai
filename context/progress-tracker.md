@@ -8,7 +8,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Goal
 
-- Await the next feature unit after completing `06-project-apis`.
+- Await the next feature specification after completing `09-share-dialog`.
 
 ## Completed
 
@@ -20,6 +20,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - `05-prisma`: Prisma schema and database layer are initialized. The `Project` and `ProjectCollaborator` models are created with appropriate indexes and relations. `lib/prisma.ts` acts as a cached singleton branching for Accelerate and PrismaPg. The first migration has been successfully executed and the generated client is type-safe.
 - `06-project-apis`: Backend REST API routes for listing, creating, renaming, and deleting projects implemented using the App Router. Authenticated endpoints with proper ownership checks.
 - `07-wire-editor-home`: Wired the editor home sidebar and dialogs to the real project API. Replaced mock data with server-side Prisma data fetching in `app/editor/page.tsx`, created `useProjectActions` hook to manage dialog state and API mutations (create, rename, delete), and updated the `POST /api/projects` route to accept client-generated room IDs.
+- `08-editor-workspace-shell`: Built the `/editor/[roomId]` workspace shell with server-side access checks. Implemented `components/editor/access-denied.tsx`, `lib/project-access.ts` for evaluating user access against database models, `components/editor/workspace-shell.tsx` for layout containing canvas and sidebars placeholders, and updated `EditorNavbar` and `ProjectSidebar` to accommodate the workspace views. Type-checked successfully.
+- `09-share-dialog`: Implemented the Share Dialog UI in the workspace allowing owners to invite and manage collaborators. Built `app/api/projects/[projectId]/collaborators` endpoints to retrieve, add, and remove project collaborators dynamically. Integrated Clerk's Backend API (`clerkClient().users.getUserList`) to enrich collaborator emails with real display names and avatars. Included Copy Link functionality via `navigator.clipboard`.
 
 ## In Progress
 
@@ -27,7 +29,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Select the next feature spec or foundation unit.
+- Wait for the next feature specification.
 
 ## Open Questions
 

@@ -1,7 +1,7 @@
-import { PrismaClient } from '../app/generated/prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { withAccelerate } from '@prisma/extension-accelerate';
-import pg from 'pg';
+import { PrismaClient } from "../app/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { withAccelerate } from "@prisma/extension-accelerate";
+import pg from "pg";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -9,7 +9,9 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL is not set");
 }
 
-const isAccelerate = databaseUrl.startsWith('prisma+postgres://') || databaseUrl.startsWith('prisma://');
+const isAccelerate =
+  databaseUrl.startsWith("prisma+postgres://") ||
+  databaseUrl.startsWith("prisma://");
 
 const createPrismaClient = () => {
   if (isAccelerate) {
@@ -17,9 +19,18 @@ const createPrismaClient = () => {
       accelerateUrl: databaseUrl,
     }).$extends(withAccelerate());
   } else {
-    const pool = new pg.Pool({ connectionString: databaseUrl });
+    const url = new URL(databaseUrl);
+    if (
+      ["require", "prefer", "verify-ca", "verify-full"].includes(
+        url.searchParams.get("sslmode") || ""
+      ) &&
+      !url.searchParams.has("uselibpqcompat")
+    ) {
+      url.searchParams.set("uselibpqcompat", "true");
+    }
+    const pool = new pg.Pool({ connectionString: url.toString() });
     const adapter = new PrismaPg(pool);
-    return new PrismaClient({ adapter });
+    return new PrismaClient({ adapter }).$extends(withAccelerate());
   }
 };
 
@@ -29,6 +40,6 @@ const globalForPrisma = globalThis as unknown as {
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
