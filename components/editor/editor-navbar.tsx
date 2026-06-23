@@ -9,12 +9,16 @@ import { cn } from "@/lib/utils"
 interface EditorNavbarProps {
   isSidebarOpen: boolean
   onSidebarToggle: () => void
+  projectName?: string
+  actions?: React.ReactNode
   className?: string
 }
 
 export function EditorNavbar({
   isSidebarOpen,
   onSidebarToggle,
+  projectName,
+  actions,
   className,
 }: EditorNavbarProps) {
   const SidebarIcon = isSidebarOpen ? PanelLeftClose : PanelLeftOpen
@@ -41,9 +45,16 @@ export function EditorNavbar({
         </Button>
       </div>
 
-      <div aria-hidden="true" className="min-w-0" />
+      <div className="flex min-w-0 items-center justify-center">
+        {projectName && (
+          <span className="truncate text-sm font-medium text-copy-primary">
+            {projectName}
+          </span>
+        )}
+      </div>
 
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-2">
+        {actions}
         <UserButton />
       </div>
     </header>

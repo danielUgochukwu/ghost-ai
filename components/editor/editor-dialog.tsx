@@ -29,7 +29,7 @@ export function EditorDialogContent({
   return (
     <DialogContent
       className={cn(
-        "gap-6 rounded-3xl border border-surface-border bg-elevated p-6 text-copy-primary shadow-2xl ring-0 sm:max-w-md",
+        "gap-6 rounded-3xl border border-surface-border bg-elevated p-6 text-copy-primary shadow-2xl ring-0 sm:max-w-md md:max-w-lg",
         className
       )}
       {...props}

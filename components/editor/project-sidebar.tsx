@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ interface ProjectSidebarProps {
   onNewProject: () => void;
   onRenameProject: (project: ProjectData) => void;
   onDeleteProject: (project: ProjectData) => void;
+  currentRoomId?: string;
   className?: string;
 }
 
@@ -32,6 +34,7 @@ interface ProjectListProps {
   canManage: boolean;
   onRenameProject: (project: ProjectData) => void;
   onDeleteProject: (project: ProjectData) => void;
+  currentRoomId?: string;
 }
 
 function ProjectList({
@@ -40,6 +43,7 @@ function ProjectList({
   canManage,
   onRenameProject,
   onDeleteProject,
+  currentRoomId,
 }: ProjectListProps) {
   if (projects.length === 0) {
     return <EmptyProjectState label={emptyLabel} />;
@@ -50,16 +54,21 @@ function ProjectList({
       {projects.map((project) => (
         <li
           key={project.id}
-          className="flex min-h-16 items-center justify-between gap-3 rounded-xl border border-surface-border bg-surface px-3 py-2"
+          className={cn(
+            "flex min-h-16 items-center justify-between gap-3 rounded-xl border px-3 py-2 transition-colors",
+            currentRoomId === project.id
+              ? "border-accent bg-accent/10"
+              : "border-surface-border bg-surface hover:border-surface-border-hover hover:bg-subtle"
+          )}
         >
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-copy-primary">
+          <Link href={`/editor/${project.id}`} className="min-w-0 flex-1 block">
+            <p className="truncate text-sm font-medium text-copy-primary hover:underline">
               {project.name}
             </p>
             <p className="mt-1 truncate text-xs text-copy-muted">
               {project.updatedLabel}
             </p>
-          </div>
+          </Link>
 
           {canManage ? (
             <div className="flex shrink-0 items-center gap-1">
@@ -99,6 +108,7 @@ export function ProjectSidebar({
   onNewProject,
   onRenameProject,
   onDeleteProject,
+  currentRoomId,
   className,
 }: ProjectSidebarProps) {
   return (
@@ -141,6 +151,7 @@ export function ProjectSidebar({
             canManage
             onRenameProject={onRenameProject}
             onDeleteProject={onDeleteProject}
+            currentRoomId={currentRoomId}
           />
         </TabsContent>
         <TabsContent value="shared" className="mt-4 min-h-0 overflow-y-auto pr-1">
@@ -150,6 +161,7 @@ export function ProjectSidebar({
             canManage={false}
             onRenameProject={onRenameProject}
             onDeleteProject={onDeleteProject}
+            currentRoomId={currentRoomId}
           />
         </TabsContent>
       </Tabs>
