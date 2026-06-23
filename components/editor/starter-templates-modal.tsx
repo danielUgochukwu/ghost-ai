@@ -232,7 +232,7 @@ export function StarterTemplatesModal({
             Choose a starter template to pre-populate your canvas. Any existing nodes will be
             replaced — use{" "}
             <kbd className="rounded-md border border-surface-border bg-elevated px-1.5 py-0.5 font-mono text-xs text-copy-secondary">
-              ⌘Z
+              Ctrl/⌘ + Z
             </kbd>{" "}
             to undo.
           </p>

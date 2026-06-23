@@ -29,6 +29,7 @@ export function CanvasEdgeRenderer({
   const [editValue, setEditValue] = useState(data?.label ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
   const sizerRef = useRef<HTMLSpanElement>(null);
+  const cancelEditRef = useRef(false);
   const [inputWidth, setInputWidth] = useState(60);
 
   const label = data?.label ?? "";
@@ -54,6 +55,7 @@ export function CanvasEdgeRenderer({
   const startEditing = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+      cancelEditRef.current = false;
       setEditValue(label);
       setIsEditing(true);
       setTimeout(() => {
@@ -65,6 +67,10 @@ export function CanvasEdgeRenderer({
   );
 
   const commitEdit = useCallback(() => {
+    if (cancelEditRef.current) {
+      cancelEditRef.current = false;
+      return;
+    }
     setIsEditing(false);
     updateEdgeData(id, { label: editValue });
   }, [id, editValue, updateEdgeData]);
@@ -72,6 +78,7 @@ export function CanvasEdgeRenderer({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Escape") {
+        cancelEditRef.current = true;
         setIsEditing(false);
         setEditValue(label);
       } else if (e.key === "Enter") {

@@ -28,7 +28,6 @@ const nodeTypes = { canvasNode: CanvasNodeRenderer };
 const edgeTypes = { canvasEdge: CanvasEdgeRenderer };
 
 let nodeCounter = 0;
-let edgeCounter = 0;
 
 // Rendered inside the ReactFlow tree so it can use useReactFlow()
 function ControlBar() {
@@ -128,7 +127,7 @@ export function CanvasFlow({ pendingTemplate, onTemplateApplied }: CanvasFlowPro
   const handleConnect = useCallback(
     (params: Connection) => {
       const newEdge: CanvasEdge = {
-        id: `edge-${Date.now()}-${++edgeCounter}`,
+        id: crypto.randomUUID(),
         source: params.source,
         sourceHandle: params.sourceHandle ?? null,
         target: params.target,

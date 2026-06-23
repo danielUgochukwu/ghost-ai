@@ -63,6 +63,7 @@ export function CanvasNodeRenderer({ id, data, selected }: NodeProps<CanvasNode>
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(data.label);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const skipBlurCommitRef = useRef(false);
 
   const textColor = getTextColor(data.color);
   const stroke = selected ? BORDER_ACTIVE : BORDER_IDLE;
@@ -85,13 +86,25 @@ export function CanvasNodeRenderer({ id, data, selected }: NodeProps<CanvasNode>
     updateNodeData(id, { label: editValue });
   }, [id, editValue, updateNodeData]);
 
+   const handleBlur = useCallback(() => {
+    if (skipBlurCommitRef.current) {
+      skipBlurCommitRef.current = false;
+      return;
+    }
+    commitEdit();
+  }, [commitEdit]);
+
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === "Escape") {
+         e.preventDefault();
+        skipBlurCommitRef.current = true;
         setIsEditing(false);
         setEditValue(data.label);
       } else if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
+        skipBlurCommitRef.current = true;
         commitEdit();
       }
     },
@@ -105,7 +118,7 @@ export function CanvasNodeRenderer({ id, data, selected }: NodeProps<CanvasNode>
           ref={textareaRef}
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
-          onBlur={commitEdit}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           onMouseDown={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
