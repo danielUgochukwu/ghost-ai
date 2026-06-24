@@ -8,6 +8,7 @@ import {
 } from "@liveblocks/react";
 import { CanvasFlow } from "@/components/editor/canvas-flow";
 import type { CanvasTemplate } from "@/components/editor/starter-templates";
+import type { SaveStatus } from "@/hooks/use-autosave";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -46,14 +47,16 @@ interface CanvasWrapperProps {
   roomId: string;
   pendingTemplate?: CanvasTemplate | null;
   onTemplateApplied?: () => void;
+  onSaveReady?: (fn: () => void) => void;
+  onSaveStatusChange?: (status: SaveStatus) => void;
 }
 
-export function CanvasWrapper({ roomId, pendingTemplate, onTemplateApplied }: CanvasWrapperProps) {
+export function CanvasWrapper({ roomId, pendingTemplate, onTemplateApplied, onSaveReady, onSaveStatusChange }: CanvasWrapperProps) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
       <RoomProvider
         id={roomId}
-        initialPresence={{ cursor: null, isThinking: false }}
+        initialPresence={{ cursor: null, thinking: false }}
       >
         <LiveblocksErrorBoundary>
           <ClientSideSuspense
@@ -65,8 +68,11 @@ export function CanvasWrapper({ roomId, pendingTemplate, onTemplateApplied }: Ca
           >
             {() => (
               <CanvasFlow
+                projectId={roomId}
                 pendingTemplate={pendingTemplate}
                 onTemplateApplied={onTemplateApplied}
+                onSaveReady={onSaveReady}
+                onSaveStatusChange={onSaveStatusChange}
               />
             )}
           </ClientSideSuspense>

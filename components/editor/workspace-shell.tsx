@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Share2, Sparkles, PanelRightClose, PanelRightOpen, LayoutTemplate } from "lucide-react";
+import { useState, useRef } from "react";
+import { Share2, Sparkles, LayoutTemplate, Save } from "lucide-react";
 
 import { EditorNavbar } from "@/components/editor/editor-navbar";
 import { ProjectSidebar } from "@/components/editor/project-sidebar";
@@ -9,10 +9,12 @@ import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { ShareDialog } from "@/components/editor/share-dialog";
 import { CanvasWrapper } from "@/components/editor/canvas-wrapper";
 import { StarterTemplatesModal } from "@/components/editor/starter-templates-modal";
+import { AiSidebar } from "@/components/editor/ai-sidebar";
 import { useProjectActions } from "@/hooks/use-project-actions";
 import { type ProjectData } from "@/components/editor/project-types";
 import { Button } from "@/components/ui/button";
 import type { CanvasTemplate } from "@/components/editor/starter-templates";
+import { type SaveStatus } from "@/hooks/use-autosave";
 
 interface ProjectOwner {
   name: string | null;
@@ -43,9 +45,15 @@ export function WorkspaceShell({
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
   const [pendingTemplate, setPendingTemplate] = useState<CanvasTemplate | null>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const saveFnRef = useRef<(() => void) | null>(null);
   const projectActions = useProjectActions();
 
-  const RightSidebarIcon = isRightSidebarOpen ? PanelRightClose : PanelRightOpen;
+  const saveButtonLabel =
+    saveStatus === "saving" ? "Saving..." :
+    saveStatus === "saved" ? "Saved" :
+    saveStatus === "error" ? "Error" :
+    "Save";
 
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-base text-copy-primary">
@@ -53,11 +61,23 @@ export function WorkspaceShell({
         isSidebarOpen={isLeftSidebarOpen}
         onSidebarToggle={() => setIsLeftSidebarOpen((isOpen) => !isOpen)}
         projectName={project.name}
+        showUserButton={false}
         actions={
           <>
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
+              size="sm"
+              className="flex gap-2"
+              disabled={saveStatus === "saving"}
+              onClick={() => saveFnRef.current?.()}
+            >
+              <Save className="h-4 w-4" />
+              <span className="hidden sm:inline">{saveButtonLabel}</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
               size="sm"
               className="flex gap-2"
               onClick={() => setIsTemplatesModalOpen(true)}
@@ -66,7 +86,7 @@ export function WorkspaceShell({
               <span className="hidden sm:inline">Templates</span>
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               className="flex gap-2"
               onClick={() => setIsShareDialogOpen(true)}
@@ -75,20 +95,13 @@ export function WorkspaceShell({
               <span className="hidden sm:inline">Share</span>
             </Button>
             <Button
-              variant="ghost"
-              size="icon"
+              variant="default"
+              size="sm"
               onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
-              className={isRightSidebarOpen ? "bg-subtle" : ""}
+              className={isRightSidebarOpen ? "flex gap-2" : ""}
             >
               <Sparkles className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsRightSidebarOpen(!isRightSidebarOpen)}
-              className="sm:hidden"
-            >
-              <RightSidebarIcon className="h-4 w-4" />
+              <span className="hidden sm:inline">Ai</span>
             </Button>
           </>
         }
@@ -102,7 +115,7 @@ export function WorkspaceShell({
             className="fixed inset-x-0 bottom-0 top-14 z-20 bg-base/70 backdrop-blur-sm md:hidden"
           />
         ) : null}
-        
+
         <ProjectSidebar
           isOpen={isLeftSidebarOpen}
           onClose={() => setIsLeftSidebarOpen(false)}
@@ -119,20 +132,17 @@ export function WorkspaceShell({
             roomId={project.id}
             pendingTemplate={pendingTemplate}
             onTemplateApplied={() => setPendingTemplate(null)}
+            onSaveReady={(fn) => {
+              saveFnRef.current = fn;
+            }}
+            onSaveStatusChange={setSaveStatus}
           />
         </div>
 
-        {/* Right Sidebar Placeholder */}
-        {isRightSidebarOpen && (
-          <aside className="w-80 border-l border-surface-border bg-surface p-4 hidden md:block">
-            <div className="flex h-full items-center justify-center text-center text-muted-foreground">
-              <div>
-                <Sparkles className="mx-auto mb-2 h-6 w-6 text-accent" />
-                <p>AI Assistant Placeholder</p>
-              </div>
-            </div>
-          </aside>
-        )}
+        <AiSidebar
+          isOpen={isRightSidebarOpen}
+          onClose={() => setIsRightSidebarOpen(false)}
+        />
       </main>
       <ProjectDialogs controller={projectActions} />
       <ShareDialog
