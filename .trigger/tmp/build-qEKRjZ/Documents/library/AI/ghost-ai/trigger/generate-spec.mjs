@@ -42184,12 +42184,12 @@ function k(a) {
 __name(k, "k");
 
 // lib/prisma.ts
-var databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not set");
-}
-var isAccelerate = databaseUrl.startsWith("prisma+postgres://") || databaseUrl.startsWith("prisma://");
 var createPrismaClient = /* @__PURE__ */ __name(() => {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is not set");
+  }
+  const isAccelerate = databaseUrl.startsWith("prisma+postgres://") || databaseUrl.startsWith("prisma://");
   if (isAccelerate) {
     return new PrismaClient({
       accelerateUrl: databaseUrl
