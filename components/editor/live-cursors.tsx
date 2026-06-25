@@ -3,6 +3,7 @@
 import { useOthers } from "@liveblocks/react";
 import { useViewport } from "@xyflow/react";
 import { useAuth } from "@clerk/nextjs";
+import { Loader2 } from "lucide-react";
 
 export function LiveCursors() {
   const { userId } = useAuth();
@@ -40,9 +41,12 @@ export function LiveCursors() {
               />
             </svg>
             <div
-              className="absolute left-4 top-3 rounded-full px-2 py-0.5 text-xs font-medium text-white whitespace-nowrap"
+              className="absolute left-4 top-3 flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-white whitespace-nowrap"
               style={{ backgroundColor: color }}
             >
+              {presence.thinking ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : null}
               {name}
             </div>
           </div>

@@ -171,9 +171,10 @@ interface CanvasFlowProps {
   onTemplateApplied?: () => void;
   onSaveReady?: (fn: () => void) => void;
   onSaveStatusChange?: (status: SaveStatus) => void;
+  onStateReady?: (fn: () => { nodes: CanvasNode[]; edges: CanvasEdge[] }) => void;
 }
 
-export function CanvasFlow({ projectId, pendingTemplate, onTemplateApplied, onSaveReady, onSaveStatusChange }: CanvasFlowProps) {
+export function CanvasFlow({ projectId, pendingTemplate, onTemplateApplied, onSaveReady, onSaveStatusChange, onStateReady }: CanvasFlowProps) {
   const { nodes, edges, onNodesChange, onEdgesChange, onDelete } =
     useLiveblocksFlow<CanvasNode, CanvasEdge>({ suspense: true });
 
@@ -188,6 +189,11 @@ export function CanvasFlow({ projectId, pendingTemplate, onTemplateApplied, onSa
   useEffect(() => {
     onSaveStatusChange?.(saveStatus);
   }, [saveStatus, onSaveStatusChange]);
+
+  useEffect(() => {
+    if (!onStateReady) return;
+    onStateReady(() => ({ nodes: nodesRef.current, edges: edgesRef.current }));
+  }, [onStateReady]);
 
   const nodesRef = useRef(nodes);
   const edgesRef = useRef(edges);

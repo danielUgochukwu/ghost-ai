@@ -17,7 +17,9 @@ declare global {
       };
     };
 
-    RoomEvent: {};
+    RoomEvent:
+      | { type: "ai-status"; status: "start" | "thinking" | "complete" | "error"; message: string; text?: string }
+      | { type: "ai-action"; action: string };
 
     ThreadMetadata: {};
 
