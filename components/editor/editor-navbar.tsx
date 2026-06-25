@@ -12,6 +12,7 @@ interface EditorNavbarProps {
   projectName?: string
   actions?: React.ReactNode
   className?: string
+  showUserButton?: boolean
 }
 
 export function EditorNavbar({
@@ -20,6 +21,7 @@ export function EditorNavbar({
   projectName,
   actions,
   className,
+  showUserButton = true,
 }: EditorNavbarProps) {
   const SidebarIcon = isSidebarOpen ? PanelLeftClose : PanelLeftOpen
 
@@ -55,7 +57,7 @@ export function EditorNavbar({
 
       <div className="flex items-center justify-end gap-2">
         {actions}
-        <UserButton />
+        {showUserButton && <UserButton />}
       </div>
     </header>
   );

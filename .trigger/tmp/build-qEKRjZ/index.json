@@ -1,0 +1,189 @@
+{
+  "configPath": "C:\\Users\\USER\\Documents\\library\\AI\\ghost-ai\\.trigger\\tmp\\build-qEKRjZ\\Documents\\library\\AI\\ghost-ai\\trigger.config.mjs",
+  "customConditions": [
+  ],
+  "prompts": [
+  ],
+  "queues": [
+  ],
+  "runtime": "node",
+  "runtimeVersion": "25.3.0",
+  "tasks": [
+    {
+      "entryPoint": "C:\\Users\\USER\\Documents\\library\\AI\\ghost-ai\\.trigger\\tmp\\build-qEKRjZ\\Documents\\library\\AI\\ghost-ai\\trigger\\design-agent.mjs",
+      "filePath": "trigger/design-agent.ts",
+      "id": "design-agent",
+      "maxDuration": 3600,
+      "retry": {
+        "factor": 2,
+        "maxAttempts": 3,
+        "maxTimeoutInMs": 10000,
+        "minTimeoutInMs": 1000,
+        "randomize": true
+      }
+    },
+    {
+      "entryPoint": "C:\\Users\\USER\\Documents\\library\\AI\\ghost-ai\\.trigger\\tmp\\build-qEKRjZ\\Documents\\library\\AI\\ghost-ai\\trigger\\generate-spec.mjs",
+      "filePath": "trigger/generate-spec.ts",
+      "id": "generate-spec",
+      "maxDuration": 3600,
+      "payloadSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "additionalProperties": false,
+        "properties": {
+          "chatHistory": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "content": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "user",
+                    "ai"
+                  ],
+                  "type": "string"
+                },
+                "senderName": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "role",
+                "content"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "edges": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "data": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "source",
+                "target"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "data": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "color": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "shape": {
+                      "enum": [
+                        "rectangle",
+                        "diamond",
+                        "circle",
+                        "pill",
+                        "cylinder",
+                        "hexagon"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "shape",
+                    "color"
+                  ],
+                  "type": "object"
+                },
+                "height": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "position": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                "width": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "data",
+                "position"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "roomId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "roomId",
+          "chatHistory",
+          "nodes",
+          "edges"
+        ],
+        "type": "object"
+      },
+      "retry": {
+        "factor": 2,
+        "maxAttempts": 3,
+        "maxTimeoutInMs": 10000,
+        "minTimeoutInMs": 1000,
+        "randomize": true
+      }
+    }
+  ],
+  "timings": {
+    "trigger/design-agent.ts": 197.8986,
+    "trigger/generate-spec.ts": 347.5800999999999
+  },
+  "workerEntryPoint": "C:\\Users\\USER\\Documents\\library\\AI\\ghost-ai\\.trigger\\tmp\\build-qEKRjZ\\AppData\\Local\\npm-cache\\_npx\\f51a09bd0abf5f10\\node_modules\\trigger.dev\\dist\\esm\\entryPoints\\dev-run-worker.mjs"
+}

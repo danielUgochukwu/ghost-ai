@@ -3,7 +3,7 @@ declare global {
   interface Liveblocks {
     Presence: {
       cursor: { x: number; y: number } | null;
-      isThinking: boolean;
+      thinking: boolean;
     };
 
     Storage: {};
@@ -17,7 +17,9 @@ declare global {
       };
     };
 
-    RoomEvent: {};
+    RoomEvent:
+      | { type: "ai-status"; status: "start" | "thinking" | "complete" | "error"; message: string; text?: string }
+      | { type: "ai-action"; action: string };
 
     ThreadMetadata: {};
 

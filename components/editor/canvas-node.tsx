@@ -278,9 +278,21 @@ export function CanvasNodeRenderer({ id, data, selected }: NodeProps<CanvasNode>
         className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
       />
       <Handle
+        type="target"
+        position={Position.Top}
+        id="handle-top-target"
+        className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
+      />
+      <Handle
         type="source"
         position={Position.Right}
         id="handle-right"
+        className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="handle-right-target"
         className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
       />
       <Handle
@@ -290,9 +302,21 @@ export function CanvasNodeRenderer({ id, data, selected }: NodeProps<CanvasNode>
         className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
       />
       <Handle
+        type="target"
+        position={Position.Bottom}
+        id="handle-bottom-target"
+        className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
+      />
+      <Handle
         type="source"
         position={Position.Left}
         id="handle-left"
+        className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="handle-left-target"
         className="h-2.5! w-2.5! rounded-full! border! border-black/40! bg-white!"
       />
     </div>
